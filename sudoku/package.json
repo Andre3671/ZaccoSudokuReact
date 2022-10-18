@@ -1,5 +1,6 @@
 {
   "name": "sudoku",
+  "homepage": "https://andre3671.github.io/ZaccoSudokuReact",
   "version": "0.1.0",
   "private": true,
   "proxy": "https://sudokuapizacco.azurewebsites.net",
