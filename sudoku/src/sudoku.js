@@ -150,7 +150,7 @@ console.log(blocklist)
     //Api Requests
     async function GetBoard(difficulty) {
        
-    var response = await fetch("/api/GetNewBoard?difficulty=" + ChoosenDifficulty[0], {
+    var response = await fetch("https://sudokuapizacco.azurewebsites.net/api/GetNewBoard?difficulty=" + ChoosenDifficulty[0], {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors',
         headers: {
