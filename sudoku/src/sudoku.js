@@ -3,9 +3,7 @@ import './Sudoku.css';
 const difficulty = [1,2,3];
 let board = [];
 //x,y,number
-let SolvedNumbers = [];
 let pressedNumber = 0;
-let SolverNumbersAmount = 0;
 
  function Sudoku() {
     useEffect(() => {
@@ -33,10 +31,13 @@ let SolverNumbersAmount = 0;
        console.log("Block: " + BlockCheck)
        if(verticalCheck === true && HorisontalCheck === true && BlockCheck === false){
         AddSolved();
+        SetStatusText("Rätt nummer");
        // GameBoard[SelectedRow][SelectedColumn] = stringnumber;
        // GameBoard = board;
         Setgame(StartGame());
         
+       }else{
+        SetStatusText("Fel nummer");
        }
     }
 
@@ -153,6 +154,7 @@ console.log(blocklist)
     var response = await fetch("https://sudokuapizacco.azurewebsites.net/api/GetNewBoard?difficulty=" + ChoosenDifficulty[0], {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors',
+
         headers: {
           'Content-Type': 'application/json'
         },
@@ -200,6 +202,16 @@ console.log(blocklist)
 
 function CheckEmptyNumber(RowIndex, ColIndex ){
    let number = GameBoard[RowIndex][ColIndex];
+   let i = 0;
+   GameBoard.forEach((row,Rindex) => {
+    if(row.includes((element) => element === "")){
+        i++;
+    }
+   });
+   if(i === 9){
+    SetStatusText("Brädet är klart");
+   }
+
      if(number === ""  ){
             return <button key={ColIndex} className="number emptynumber" onClick={() => OnCLickEmptyNumber(RowIndex,ColIndex)}>
             <div  key={ColIndex} >           
