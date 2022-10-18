@@ -22,20 +22,20 @@ let pressedNumber = 0;
     }
 
     const detectKeyUp = async (e) => {
-        console.log("pressed: " + pressedNumber)
+      //  console.log("pressed: " + pressedNumber)
         const verticalCheck = CheckVertical()
-        console.log("Vertikal: " + verticalCheck)
+        //console.log("Vertikal: " + verticalCheck)
        const HorisontalCheck = CheckHorisontal();
-       console.log("Horisontell: " + HorisontalCheck)
+       //console.log("Horisontell: " + HorisontalCheck)
        const BlockCheck = CheckBlock();
-       console.log("Block: " + BlockCheck)
+       //console.log("Block: " + BlockCheck)
        if(verticalCheck === true && HorisontalCheck === true && BlockCheck === false){
         AddSolved();
         SetStatusText("Rätt nummer");
        // GameBoard[SelectedRow][SelectedColumn] = stringnumber;
        // GameBoard = board;
         Setgame(StartGame());
-        
+        CheckCompletion();
        }else{
         SetStatusText("Fel nummer");
        }
@@ -93,7 +93,7 @@ let pressedNumber = 0;
    // console.log("loop2")
     row = 0;
 }
-console.log(blocklist)
+//console.log(blocklist)
 
         //-1 - 3 rad 1
         
@@ -140,6 +140,20 @@ console.log(blocklist)
         
         return  CorrectPressed;
     }
+//upp till api
+    function CheckCompletion(){
+        let i = 0;
+        GameBoard.forEach((row,Rindex) => {
+         if(row.includes((element) => element === "")){
+             i++;
+             console.log("rad"+i+" är klar")
+         }
+        });
+        if(i === 9){
+         SetStatusText("Brädet är klart");
+        }
+    }
+
  
     const [game,Setgame] = useState(null)
     let [StatusText,SetStatusText] = useState("")
@@ -152,16 +166,20 @@ console.log(blocklist)
     async function GetBoard(difficulty) {
        
     var response = await fetch("https://sudokuapizacco.azurewebsites.net/api/GetNewBoard?difficulty=" + ChoosenDifficulty[0], {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors',
-
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         
     });
-        const data =  await response.json();
-        console.log(JSON.stringify(data))
+   
+       let  data =  await response.json();
+       // console.log(JSON.stringify(data))
+     
+        
         return(data)
     }
 
@@ -202,15 +220,7 @@ console.log(blocklist)
 
 function CheckEmptyNumber(RowIndex, ColIndex ){
    let number = GameBoard[RowIndex][ColIndex];
-   let i = 0;
-   GameBoard.forEach((row,Rindex) => {
-    if(row.includes((element) => element === "")){
-        i++;
-    }
-   });
-   if(i === 9){
-    SetStatusText("Brädet är klart");
-   }
+  
 
      if(number === ""  ){
             return <button key={ColIndex} className="number emptynumber" onClick={() => OnCLickEmptyNumber(RowIndex,ColIndex)}>
@@ -233,7 +243,7 @@ function CheckEmptyNumber(RowIndex, ColIndex ){
 function OnCLickEmptyNumber(row,col){
     SelectedRow[0] = row;
     SelectedColumn[0] = col;
-    console.log("row +" + row  +" col" + col)
+   // console.log("row +" + row  +" col" + col)
 }
 
 
