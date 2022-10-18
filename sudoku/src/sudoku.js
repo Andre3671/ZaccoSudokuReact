@@ -59,7 +59,7 @@ let pressedNumber = 0;
       });
       return  CorrectPressed ;
     }
-
+//lägga i apin
     function CheckHorisontal(){
         let CorrectPressed = true;
         GameBoard[SelectedRow[0]].forEach((col) => {
@@ -69,7 +69,7 @@ let pressedNumber = 0;
         })
         return  CorrectPressed;
     };
-    
+    //lägga i apin och buggtesta
     function CheckBlock(){
         let CorrectPressed = true;
         let blocklist =[[]];
