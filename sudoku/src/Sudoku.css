@@ -1,0 +1,22 @@
+.board {
+    background: green;
+    width: 60vw;
+    height: 70vh;
+}
+
+
+
+.row {
+    height: 10%;
+    min-height: 10%;
+    display: flex;
+    justify-content: center;
+    margin: 1%;
+}
+
+.number {
+    height: 100%;
+    width: 8%;
+    background: red;
+    margin: 1%;
+}

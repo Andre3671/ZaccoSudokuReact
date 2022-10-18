@@ -1,0 +1,173 @@
+import { useEffect, useState } from 'react';
+import './Sudoku.css';
+const difficulty = [1,2,3];
+const board = [
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,4,6,7,8,9],
+    [1,2,3,4,-5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [-1,2,3,4,-5,6,7,8,-9],
+];
+
+const board2 = [
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,4,6,7,8,9],
+    [1,2,3,4,-5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,-3,4,-5,6,7,-8,9],
+];
+const board3 = [
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,4,6,7,8,9],
+    [1,2,3,4,-5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,2,3,4,5,6,7,8,9],
+    [1,-2,3,-4,5,-6,7,-8,9],
+];
+
+
+
+function Sudoku() {
+    useEffect(() => {
+        document.addEventListener('keydown',detectKeyDown,true)
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
+
+    const detectKeyDown = (e) => {
+        var re = new RegExp("^([1-9])");
+    let key = parseInt(e.key)
+        if( re.test(key)){
+            var number = parseInt(GameBoard[SelectedRow][SelectedColumn]) + key;
+            console.log(number)
+            if(number === 0){
+                console.log("Rätt Svar")
+                GameBoard[SelectedRow][SelectedColumn] = key;
+                Setgame(StartGame());
+                SetStatusText("Rätt svar")
+                CheckGameCompletion();
+            }else{
+                SetStatusText("Fel svar")
+            }
+            
+        }
+    }
+ 
+    const [game,Setgame] = useState(null)
+    let [StatusText,SetStatusText] = useState("")
+    let SelectedRow = useState(0)
+    let SelectedColumn = useState(0)
+    let GameBoard = useState(board)
+    let [ChoosenDifficulty,SetChoosenDifficulty] = useState(1)
+   
+
+    function CheckDifficulty(){
+       if(ChoosenDifficulty === 1) {
+            GameBoard = board;
+    }else if(ChoosenDifficulty === 2){
+            GameBoard = board2;
+        }else if(ChoosenDifficulty === 3){
+            GameBoard = board3;
+        }
+       return StartGame();
+    }
+
+    function StartGame(){
+       return <div><div  className="board">
+        {
+            GameBoard.map((row,Rindex) => {
+                return <div key={Rindex} className="row">
+                    {
+                        row.map((col,Cindex) => {      
+                           return CheckEmptyNumber(Rindex,Cindex)
+                        })
+                    }
+
+                </div>
+            })
+        }    
+        </div>
+        <button onClick={() =>ShowSolution()}>Visa lösning</button>
+        </div>
+    }
+
+    function ShowSolution(){
+        board.forEach((row,Rindex) => {
+            row.forEach((col,Cindex) => {
+                if(parseInt(col) < 0){
+                  
+                    GameBoard[Rindex][Cindex] = Math.abs(col)
+                }
+            })
+        })
+        Setgame(StartGame())
+    }
+
+function CheckEmptyNumber(RowIndex, ColIndex ){
+   var number = GameBoard[RowIndex][ColIndex];
+    if(number > 0){
+        return <div key={ColIndex} className="number">
+            {number}
+        </div>
+        
+    }else{
+        return <button key={ColIndex} className="number emptynumber" onClick={() => OnCLickEmptyNumber(RowIndex,ColIndex)}>
+            <div  key={ColIndex} >
+            
+        </div></button>
+    }
+}
+
+function CheckGameCompletion(){
+    var i = 0;
+    var AllDone = 81;
+    GameBoard.forEach((row,Rindex) => {
+        row.forEach((col,Cindex) => {
+            if(parseInt(col) > 0){
+                i++; 
+            }
+        })
+    })
+    if(parseInt(i) === parseInt(AllDone)){
+        console.log("Allt klart")
+        SetStatusText("Grattis du lyckades!!!")
+    }
+}
+
+function OnCLickEmptyNumber(row,col){
+    SelectedRow = row;
+    SelectedColumn = col;
+    console.log("row +" + row  +" col" + col)
+}
+
+  return (
+    <div className="Sudoku">
+        <label>Svårighetsgrad</label>
+        <div>{StatusText}</div>
+      <select onChange={(e) =>SetChoosenDifficulty(parseInt(e.target.value)) } >
+        {
+            difficulty.map((diffi,index) => {
+                return <option key={diffi} value={diffi}>{diffi}</option>
+            })
+        }
+      </select>
+      <button onClick={(() => Setgame(CheckDifficulty))}>Starta Spelet</button>
+      {game}
+    </div>
+  );
+}
+
+export default Sudoku;
+
+
+
