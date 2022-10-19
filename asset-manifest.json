@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/ZaccoSudokuReact/static/css/main.976a8542.css",
+    "main.css": "/ZaccoSudokuReact/static/css/main.905ad3dc.css",
     "main.js": "/ZaccoSudokuReact/static/js/main.11768c78.js",
     "static/js/787.0b13cb1a.chunk.js": "/ZaccoSudokuReact/static/js/787.0b13cb1a.chunk.js",
     "index.html": "/ZaccoSudokuReact/index.html",
-    "main.976a8542.css.map": "/ZaccoSudokuReact/static/css/main.976a8542.css.map",
+    "main.905ad3dc.css.map": "/ZaccoSudokuReact/static/css/main.905ad3dc.css.map",
     "main.11768c78.js.map": "/ZaccoSudokuReact/static/js/main.11768c78.js.map",
     "787.0b13cb1a.chunk.js.map": "/ZaccoSudokuReact/static/js/787.0b13cb1a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.976a8542.css",
+    "static/css/main.905ad3dc.css",
     "static/js/main.11768c78.js"
   ]
 }
