@@ -22,18 +22,10 @@ let pressedNumber = 0;
     }
 
     const detectKeyUp = async (e) => {
-      //  console.log("pressed: " + pressedNumber)
-        const verticalCheck = CheckVertical()
-        //console.log("Vertikal: " + verticalCheck)
-       const HorisontalCheck = CheckHorisontal();
-       //console.log("Horisontell: " + HorisontalCheck)
-       const BlockCheck = CheckBlock();
-       //console.log("Block: " + BlockCheck)
-       if(verticalCheck === true && HorisontalCheck === true && BlockCheck === false){
-        AddSolved();
+        const check = await CheckNumber(pressedNumber,SelectedRow[0],SelectedColumn[0]);
+       if(check === false){
+        AddSolved(pressedNumber,SelectedRow[0],SelectedColumn[0]);
         SetStatusText("Rätt nummer");
-       // GameBoard[SelectedRow][SelectedColumn] = stringnumber;
-       // GameBoard = board;
         Setgame(StartGame());
         CheckCompletion();
        }else{
@@ -41,105 +33,10 @@ let pressedNumber = 0;
        }
     }
 
-    function AddSolved(){
-        //console.log("blocket kan ligga där " && SelectedRow && " " && SelectedColumn)
-       
-         GameBoard[SelectedRow[0]][SelectedColumn[0]]  = pressedNumber.toString();
+    function AddSolved(number,row,col){
+         GameBoard[row][col]  = number.toString();
     }
-
-//lägga i apin
-    function CheckVertical(){
-        let CorrectPressed = true;
-      GameBoard.forEach((row,index) => {
-        //kan jag lägga in numret på den platsen?
-        //finns redan numret i kolumnen?
-        if(pressedNumber === parseInt(row[SelectedColumn[0]])){
-            CorrectPressed = false;
-        }
-      });
-      return  CorrectPressed ;
-    }
-//lägga i apin
-    function CheckHorisontal(){
-        let CorrectPressed = true;
-        GameBoard[SelectedRow[0]].forEach((col) => {
-            if(pressedNumber === parseInt(col)){
-                CorrectPressed = false;
-            }
-        })
-        return  CorrectPressed;
-    };
-    //lägga i apin och buggtesta
-    function CheckBlock(){
-        let CorrectPressed = true;
-        let blocklist =[[]];
-        let block = 0;
-        let row = 0;
-        for(let x = 0; x < 7; x+=3){
-           // console.log("test" + x);
-      //dela upp brädet i block
-    for(let i = 0; i < 3; i++){
-       
-        let NewBlock  = GameBoard[row].slice(0 + x,3 + x)
-       
-        const NewBlock2 = GameBoard[row + 1].slice(0 + x,3 + x)
-        const NewBlock3  = GameBoard[row + 2].slice(0 + x,3 + x)
-        NewBlock = NewBlock.concat(NewBlock2).concat(NewBlock3);
-        blocklist[block] = NewBlock;
-        block++;
-     //   console.log("loop1")
-        row = row + 3;
-    }
-   // console.log("loop2")
-    row = 0;
-}
-//console.log(blocklist)
-
-        //-1 - 3 rad 1
-        
-        if(SelectedColumn[0] > -1 && SelectedColumn[0] < 3){
-           
-            if(SelectedRow[0] > -1 && SelectedRow[0] < 3){
-                return blocklist[0].some((element) => element === pressedNumber);
-               
-                
-            } else if(SelectedRow[0] > 2 && SelectedRow[0] < 6){
-           
-                return blocklist[1].some((element) => element === pressedNumber);
-            }else if(SelectedRow[0] > 5 && SelectedRow[0] < 9){
-                
-                return blocklist[2].some((element) => element === pressedNumber);
-            }
-        
-
-        }else if(SelectedColumn[0] > 2 && SelectedColumn[0] < 6){
-          
-            if(SelectedRow[0] > -1 && SelectedRow[0] < 3){
-                return blocklist[3].some((element) => element === pressedNumber);
-               } else if(SelectedRow[0] > 2 && SelectedRow[0] < 6){
-                
-                return blocklist[4].some((element) => element === pressedNumber);
-               }else if(SelectedRow[0] > 5 && SelectedRow[0] < 9){
-                
-                return blocklist[5].some((element) => element === pressedNumber);
-               }
-        }else if(SelectedColumn[0] > 5 && SelectedColumn[0] < 9){
-          
-            if(SelectedRow[0] > -1 && SelectedRow[0] < 3){
-              
-                return blocklist[6].some((element) => element === pressedNumber);
-               } else if(SelectedRow[0] > 2 && SelectedRow[0] < 6){
-               
-                return blocklist[7].some((element) => element === pressedNumber);
-               }else if(SelectedRow[0] > 5 && SelectedRow[0] < 9){
-                
-                return blocklist[8].some((element) => element === pressedNumber);
-               }
-        }
-
-        
-        return  CorrectPressed;
-    }
+   
 //upp till api
     function CheckCompletion(){
         let i = 0;
@@ -152,6 +49,50 @@ let pressedNumber = 0;
         if(i === 9){
          SetStatusText("Brädet är klart");
         }
+    }
+
+    function Solveboard(){
+    let TempBoard = GameBoard;
+    TempBoard.forEach((row,Rindex) => {
+      
+            row.forEach(async (col,Cindex) => {
+                
+               
+                if(col === ""){
+                    console.log("test "  + col)
+                    for(let i = 1; i < 10; ){
+                        const check = await CheckNumber(i,Rindex,Cindex);
+                        console.log("number: "+ i + " row: " + Rindex+ " col:"+Cindex + " check:" + check)
+                        if(check === false){
+                          row[Cindex] = i.toString()
+                         //AddSolved(i.toString(),Rindex,Cindex);
+                        }
+                        i++
+                    }
+                }
+                
+
+            });
+
+        })
+        GameBoard = TempBoard;
+       // Setgame(StartGame());
+        SetStatusText("Brädet är klart");
+        return StartGame();
+       
+    }
+   async function CheckNumber(number,row,col){
+    var response = await fetch("https://sudokuapizacco.azurewebsites.net/api/CheckAllowNumber?difficulty="+ChoosenDifficulty[0] +"&row="+row+"&column="+col+"&pressed=" + number, {
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+    });
+       let  data =  await response.json();
+        return(data)  
     }
 
  
@@ -212,7 +153,7 @@ let pressedNumber = 0;
             })
         }    
         </div>
-        {/* <button onClick={() =>ShowSolution()}>Visa lösning</button> */}
+         <button onClick={() =>Setgame(Solveboard())}>Visa lösning</button> 
         </div>
     }
 
