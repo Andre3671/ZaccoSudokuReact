@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import './Sudoku.css';
 const difficulty = [1,2,3];
 let board = [];
-//x,y,number
 let pressedNumber = 0;
 
  function Sudoku() {
@@ -37,7 +36,6 @@ let pressedNumber = 0;
          GameBoard[row][col]  = number.toString();
     }
    
-//upp till api
     function CheckCompletion(){
         let i = 0;
         GameBoard.forEach((row,Rindex) => {
@@ -54,10 +52,7 @@ let pressedNumber = 0;
     function Solveboard(){
     let TempBoard = GameBoard;
     TempBoard.forEach((row,Rindex) => {
-      
-            row.forEach(async (col,Cindex) => {
-                
-               
+            row.forEach(async (col,Cindex) => { 
                 if(col === ""){
                     console.log("test "  + col)
                     for(let i = 1; i < 10; ){
@@ -65,7 +60,6 @@ let pressedNumber = 0;
                         console.log("number: "+ i + " row: " + Rindex+ " col:"+Cindex + " check:" + check)
                         if(check === false){
                           row[Cindex] = i.toString()
-                         //AddSolved(i.toString(),Rindex,Cindex);
                         }
                         i++
                     }
@@ -76,14 +70,13 @@ let pressedNumber = 0;
 
         })
         GameBoard = TempBoard;
-       // Setgame(StartGame());
         SetStatusText("Brädet är klart");
         return StartGame();
        
     }
    async function CheckNumber(number,row,col){
     var response = await fetch("https://sudokuapizacco.azurewebsites.net/api/CheckAllowNumber?difficulty="+ChoosenDifficulty[0] +"&row="+row+"&column="+col+"&pressed=" + number, {
-        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        method: 'GET', 
         mode: 'cors',
         credentials: 'include',
         headers: {
@@ -118,21 +111,15 @@ let pressedNumber = 0;
     });
    
        let  data =  await response.json();
-       // console.log(JSON.stringify(data))
-     
-        
         return(data)
     }
 
      
      async function CheckDifficulty(){
         let test = await GetBoard(ChoosenDifficulty);
-        //console.log("test: " + JSON.stringify(test));
         if(test !== null){
             GameBoard = test;
         }
-       
-        //console.log(GameBoard)
         return StartGame();
     }
 
@@ -175,16 +162,10 @@ function CheckEmptyNumber(RowIndex, ColIndex ){
 
    
 }
-//loopa igenom checkarna
-//skicka till api
-// function CheckGameCompletion(){
-//    
-// }
 
 function OnCLickEmptyNumber(row,col){
     SelectedRow[0] = row;
     SelectedColumn[0] = col;
-   // console.log("row +" + row  +" col" + col)
 }
 
 
@@ -192,16 +173,21 @@ function OnCLickEmptyNumber(row,col){
 
   return (
     <div className="Sudoku">
-        <label>Svårighetsgrad</label>
-        <div>{StatusText}</div>
-      <select onChange={(e) =>ChoosenDifficulty[0] = parseInt(e.target.value) } >
+        
+        <div className='GameNav'>
+        <p>Svårighetsgrad:</p>
+        <select onChange={(e) =>ChoosenDifficulty[0] = parseInt(e.target.value) } >
         {
             difficulty.map((diffi,index) => {
                 return <option key={diffi} value={diffi}>{diffi}</option>
             })
         }
       </select>
+      
       <button onClick={(async () =>  Setgame(await CheckDifficulty()))}>Starta Spelet</button>
+        </div>
+      
+      <p className='StatusText'>{StatusText}</p>
       {game}
     </div>
   );

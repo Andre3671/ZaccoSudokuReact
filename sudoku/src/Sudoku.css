@@ -1,7 +1,7 @@
 .board {
     background: green;
     width: 50vw;
-    height: 50vh;
+    height: 60vh;
 }
 
 
@@ -17,6 +17,14 @@
 .number {
     height: 100%;
     width: 8%;
-    background: red;
+    background: blue;
     margin: 1%;
+}
+
+.empty{
+    background: lightblue;
+}
+
+.StatusText{
+    color:lightblue;
 }
